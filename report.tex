@@ -1,6 +1,8 @@
 \documentclass{article}
 
 \usepackage{amsthm}
+\usepackage{float}
+\usepackage{graphicx}
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -72,6 +74,140 @@ Short  summary of purpose and content.
 This section contains solutions to homework.
 
 \subsection{Week 2}
+
+Exercise 2.3.2 - Convert to a DFA the following NFA
+
+\begin{table}[h!] % h! uses the float package (https://www.overleaf.com/learn/latex/Positioning_images_and_tables#Positioning_tables)
+\centering
+\begin{tabular}{r||l|l}
+    & 0 & 1 \\
+    \hline
+    $\rightarrow$ p & $\{q,s\}$ & $\{q\}$ \\
+    *q & $\{r\}$ & $\{q,r\}$ \\
+    r & $\{s\}$ & $\{p\}$ \\
+    *s & $\emptyset$ & $\{p\}$
+\end{tabular}
+\end{table}
+
+The variables we have are $\Sigma$, $q_0$, Q and F. We need to find $\delta$.
+\begin{enumerate}
+    \item[$\Sigma$:] $\{0,1\}$
+    \item[$q_0$:] p
+    \item[Q:] $\{p,q,r,s\}$
+    \item[F:] $\{q,s\}$
+\end{enumerate}
+
+In order to make this NFA to DFA, we have to draw up a new table now, including the complete subset construction.
+
+\begin{table}[h!] % h! uses the float package (https://www.overleaf.com/learn/latex/Positioning_images_and_tables#Positioning_tables)
+\centering
+\begin{tabular}{r||l|l}
+    & 0 & 1 \\
+    \hline
+    $\emptyset$ & $\emptyset$ & $\emptyset$ \\
+    $\rightarrow$ $\{p\}$ & $\{*q, *s\}$ & $\{*q\}$ \\
+    $\{*q\}$ & $\{r\}$ & $\{*q, r\}$ \\
+    $\{r\}$ & $\{*s\}$ & $\{p\}$ \\
+    $\{*s\}$ & $\emptyset$ & $\{p\}$ \\
+
+    $\{p, *q\}$ & $\{*q, r, *s\}$ & $\{*q, r\}$ \\
+    $\{p, r\}$ & $\{*q, *s\}$ & $\{p, *q\}$ \\
+    $\{p, *s\}$ & $\{*q, *s\}$ & $\{p, *q\}$ \\
+
+    $\{*q, r\}$ & $\{r, *s\}$ & $\{p, *q, r\}$ \\
+    $\{*q, *s\}$ & $\{r\}$ & $\{p, *q, r\}$ \\
+
+    $\{r, *s\}$ & $\{*s\}$ & $\{p\}$ \\
+
+    $\{p, *q, r\}$ & $\{*q, r, *s\}$ & $\{p, *q, r\}$ \\
+    $\{p, *q, *s\}$ & $\{*q, r, *s\}$ & $\{p, *q, r\}$ \\
+    $\{p, r, *s\}$ & $\{*q, *s\}$ & $\{p, *q\}$ \\
+    $\{*q, r, *s\}$ & $\{r, *s\}$ & $\{p, *q, r\}$ \\
+
+    $\{p, *q, r, *s\}$ & $\{*q, r, *s\}$ & $\{p, *q, r\}$ \\
+\end{tabular}
+\begin{align*}
+figure:2.1.1
+\end{align*}
+\end{table}
+
+In an NFA, there are $N$ states from $2^N$ subsets in DFA. Since we have four states given to us, we have $2^4$ subsets. To organize our new sets, we give them new labels to better keep track of them all.
+
+\begin{table}[h!] % h! uses the float package (https://www.overleaf.com/learn/latex/Positioning_images_and_tables#Positioning_tables)
+\centering
+\begin{tabular}{c|c}
+    New Label & Set \\
+    \hline
+    A & $\{p\}$ \\
+    *B & $\{*q\}$ \\
+    C & $\{r\}$ \\
+    *D & $\{*s\}$ \\
+    E & $\{p, *q\}$ \\
+    F & $\{p, r\}$ \\
+    G & $\{p, *s\}$ \\
+    H & $\{*q, r\}$ \\
+    I & $\{*q, *s\}$ \\
+    J & $\{r, *s\}$ \\
+    K & $\{p, *q, r\}$ \\
+    L & $\{p, *q, *s\}$ \\
+    M & $\{p, r, *s\}$ \\
+    N & $\{*q, r, *s\}$ \\
+    O & $\{p, *q, r, *s\}$ \\
+\end{tabular}
+\begin{align*}
+figure:2.1.2
+\end{align*}
+\end{table}
+
+\pagebreak
+To keep it simple, the $\emptyset$ will still be $\emptyset$ in our translation.
+The new $\Sigma$, $q_0$, Q, and F are listed below.
+\begin{enumerate}
+    \item[Q:] $\{A, B, C, D, E, F, G, H, I, J, K, L, M, N, O\}$
+    \item[$\Sigma$:] $\{0,1\}$
+    \item[$q_0$:] A
+    \item[F:] $\{B,D\}$
+\end{enumerate}
+
+Using the new labels in figure 2.1.2, we replace what we see in 2.1.1.
+
+\begin{table}[h!] % h! uses the float package (https://www.overleaf.com/learn/latex/Positioning_images_and_tables#Positioning_tables)
+\centering
+\begin{tabular}{r||c|c}
+    & 0 & 1 \\
+    \hline
+    $\rightarrow$ A & I & *B \\
+    *B & C & H \\
+    C & *D & A \\
+    *D & $\emptyset$ & A \\
+    E & N & H \\
+    F & I & E \\
+    G & I & E \\
+    H & J & K \\
+    I & C & K \\
+    J & *D & A \\
+    K & N & K \\
+    L & N & K \\
+    M & I & E \\
+    N & J & K \\
+    O & N & K \\
+\end{tabular}
+\begin{align*}
+figure:2.1.3
+\end{align*}
+\end{table}
+
+
+\pagebreak
+\medskip\noindent
+To better understand this using a graphical depiction, this is a map of the $\delta$.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{week2.png}
+    \caption{Graphical Depiction - Week 2 Example}
+    \label{fig:Graphical Depiction - Week 2 Example}
+\end{figure}
 
 \subsection{Week 3}
 
